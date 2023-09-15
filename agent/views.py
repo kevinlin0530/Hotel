@@ -38,10 +38,12 @@ class AgentModel(viewsets.ModelViewSet):
             #! 代理人不是當前請求的用戶，返回未授權的回應
             return Response({"status": "未授權"}, status=status.HTTP_401_UNAUTHORIZED)
         
+        #! 如果有飯店和代理人，回傳所管理的飯店和房型
         if hotel_name and agent_name:
             rooms = Room.objects.filter(hotel=hotel_name)
             serializer = RoomSerializer(rooms,many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        #! 只有代理，回傳代理的所有飯店
         elif agent_name:
             serializer = AgentHotelSerializer(queryset,many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
